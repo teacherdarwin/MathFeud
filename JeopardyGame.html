@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Arcade Jeopardy</title>
+    <title>Jeopardy Game</title>
     <!-- Importing 8-Bit Pixel Font from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,11 +36,14 @@
             image-rendering: pixelated;
         }
         
-        /* 3D Retro Text Shadows */
+        /* Title Layout */
+        .title-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
         h1 { 
-            text-align: center; 
             color: var(--accent-amber); 
-            margin-bottom: 30px; 
+            margin-bottom: 15px; 
             text-transform: uppercase; 
             font-size: 2.2rem;
             line-height: 1.4;
@@ -91,13 +94,15 @@
         }
         .pixel-btn.plus { background: var(--pixel-green); box-shadow: 0px 4px 0px #15803d, 0px 4px 0px #000; }
         .pixel-btn.minus { background: var(--pixel-red); box-shadow: 0px 4px 0px #b91c1c, 0px 4px 0px #000; }
+        .pixel-btn.control { background: #6b21a8; box-shadow: 0px 4px 0px #4c1d95, 0px 4px 0px #000; font-size: 0.75rem; padding: 10px 20px; margin-top: 10px; }
+        .pixel-btn.control:hover { background: #7e22ce; }
         .pixel-btn:active {
             transform: translateY(4px);
             box-shadow: 0px 0px 0px #000;
         }
 
         /* Game Board Grid Architecture */
-        .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 1200px; margin: 0 auto 50px auto; width: 100%; }
+        .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 1200px; margin: 0 auto; width: 100%; }
         .category-header { 
             background: #1e1b4b; 
             padding: 15px 5px; 
@@ -140,7 +145,7 @@
             text-shadow: none;
         }
 
-        /* Retro Modal Overlay Layout */
+        /* Retro Modals Framework Overlay Layout */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); align-items: center; justify-content: center; padding: 20px; z-index: 100; }
         .modal-content { 
             background: #020617; 
@@ -170,28 +175,22 @@
         
         .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #ef4444; }
 
-        /* Integrated Inline Bottom Teacher Panel Station */
-        .teacher-inline-panel {
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            background: #0f172a;
-            border: 4px solid #a855f7;
-            box-shadow: 6px 6px 0px #000;
-            padding: 25px;
-            margin-top: 40px;
+        /* Pop-up Teacher Control Dashboard Panel Styling */
+        #teacherModal .modal-content {
+            max-width: 1100px;
+            max-height: 85vh;
+            overflow-y: auto;
+            text-align: left;
+            border-color: #a855f7;
         }
         .panel-heading {
             color: #c084fc;
-            font-size: 0.9rem;
+            font-size: 1rem;
             text-transform: uppercase;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             letter-spacing: 1px;
-            border-bottom: 3px dashed #334155;
-            padding-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            border-bottom: 4px dashed #334155;
+            padding-bottom: 12px;
         }
         .panel-grid {
             display: grid;
@@ -200,7 +199,7 @@
             margin-bottom: 25px;
         }
         .panel-col {
-            background: #020617;
+            background: #0f172a;
             padding: 12px;
             border: 2px solid #334155;
         }
@@ -216,7 +215,7 @@
             text-transform: uppercase;
         }
         .clue-edit-box {
-            background: #0f172a;
+            background: #020617;
             padding: 8px;
             margin-bottom: 10px;
             border-left: 3px solid #3b82f6;
@@ -228,22 +227,26 @@
         }
         .panel-input {
             width: 100%;
-            background: #020617;
+            background: #0f172a;
             border: 1px solid #475569;
             color: #e2e8f0;
             padding: 6px;
-            font-family: var(--font-sans); /* Kept readable for long custom text entry */
+            font-family: var(--font-sans); /* Kept standard typography for easy long question writing */
             font-size: 0.8rem;
             margin-top: 4px;
             display: block;
         }
         .panel-input:focus { outline: none; border-color: var(--accent-amber); }
-        .panel-save-container { text-align: center; }
+        .panel-save-container { text-align: center; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <h1>Retro Jeopardy</h1>
+    <div class="title-container">
+        <h1>Jeopardy Game</h1>
+        <!-- Config Launcher Trigger Button under Title Header -->
+        <button class="pixel-btn control" onclick="openTeacherPanel()">[ EDIT QUESTS ]</button>
+    </div>
 
     <!-- Scoreboard System -->
     <div class="scoreboard">
@@ -293,16 +296,19 @@
         </div>
     </div>
 
-    <!-- Inline Bottom Teacher Workspace Station -->
-    <div class="teacher-inline-panel">
-        <div class="panel-heading">🛠️ Teacher Control Panel [Live Editor]</div>
-        
-        <div id="panelFormGroup" class="panel-grid">
-            <!-- Programmatic loops map editing inputs here instantly -->
-        </div>
+    <!-- Popout Teacher Configuration Dashboard Panel Modal -->
+    <div class="modal" id="teacherModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTeacherPanel()">&times;</span>
+            <div class="panel-heading">🛠️ Teacher Control Panel [Live Editor]</div>
+            
+            <div id="panelFormGroup" class="panel-grid">
+                <!-- Programmatic loops map input clusters here instantly -->
+            </div>
 
-        <div class="panel-save-container">
-            <button class="action-btn" onclick="saveConfigData()">Compile & Rebuild Grid</button>
+            <div class="panel-save-container">
+                <button class="action-btn" onclick="saveConfigData()">Compile & Rebuild Grid</button>
+            </div>
         </div>
     </div>
 
@@ -405,8 +411,18 @@
             scoreEl.innerText = newScore < 0 ? newScore : String(newScore).padStart(3, '0');
         }
 
-        // Render input panels layout components permanently embedded at bottom setup
-        function buildTeacherPanelUI() {
+        // Configuration Panel Open / Close controls
+        function openTeacherPanel() {
+            buildTeacherPanelInputs();
+            document.getElementById('teacherModal').style.display = 'flex';
+        }
+
+        function closeTeacherPanel() {
+            document.getElementById('teacherModal').style.display = 'none';
+        }
+
+        // Render input structure fields inside the pop-up modal dashboard
+        function buildTeacherPanelInputs() {
             const container = document.getElementById('panelFormGroup');
             container.innerHTML = "";
             
@@ -433,7 +449,7 @@
             });
         }
 
-        // Pull active parameters out from DOM form element configurations, maps tracking array, triggers redraws
+        // Pull active parameters out from form text entries, parse mapping configurations, updates layout grid redraws
         function saveConfigData() {
             gameData.forEach((catObj, catIdx) => {
                 const newCatName = document.getElementById(`cfg-cat-${catIdx}`).value;
@@ -448,12 +464,11 @@
             });
             
             initBoard();
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll up to display fresh board
+            closeTeacherPanel();
         }
 
         window.onload = function() {
             initBoard();
-            buildTeacherPanelUI();
         };
     </script>
 </body>
