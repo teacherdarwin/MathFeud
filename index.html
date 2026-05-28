@@ -3,574 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Feud - Classroom Edition</title>
+    <title>Math Feud - Master Controller</title>
     <style>
         :root {
             --feud-blue: #07123a;
             --feud-gold: #f1b811;
-            --feud-light-blue: #0066cc;
-            --feud-board-bg: #030a21;
+            --feud-dark: #111;
         }
 
         body {
-            font-family: 'Arial Black', Gadget, sans-serif;
-            background: radial-gradient(circle, #1a365d 0%, #07123a 100%);
-            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
             margin: 0;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(241, 184, 17, 0.6);
-        }
-
-        header h1 {
-            font-size: 3.5rem;
-            color: var(--feud-gold);
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            -webkit-text-stroke: 2px #fff;
-        }
-
-        header p {
-            font-size: 1.2rem;
-            color: #fff;
-            margin: 5px 0 0 0;
-        }
-
-        .game-container {
-            width: 100%;
-            max-width: 1000px;
+        h1, h2, h3 { color: var(--feud-gold); margin-top: 0; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 2fr;
             gap: 20px;
         }
 
-        /* Setup & Admin Panels */
         .panel {
-            background: rgba(3, 10, 33, 0.9);
-            border: 3px solid var(--feud-gold);
-            border-radius: 15px;
+            background: #2d3748;
+            border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.7);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-top: 4px solid var(--feud-gold);
         }
 
-        .panel h2 {
-            color: var(--feud-gold);
-            margin-top: 0;
-            border-bottom: 2px solid var(--feud-gold);
-            padding-bottom: 10px;
-        }
+        .full-width { grid-column: span 2; }
 
-        .setup-group {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        label {
-            font-size: 1.1rem;
-        }
-
+        label { display: block; font-weight: bold; margin: 10px 0 5px; color: #cbd5e0;}
         input, select, textarea {
-            background: #223;
-            border: 2px solid var(--feud-gold);
-            color: white;
-            padding: 8px;
-            border-radius: 5px;
-            font-family: sans-serif;
-            font-size: 1rem;
+            width: 100%; padding: 8px; box-sizing: border-box;
+            background: #1a202c; border: 1px solid #4a5568;
+            color: white; border-radius: 4px; font-size: 1rem;
         }
 
         button {
-            background: linear-gradient(180deg, #f1b811 0%, #b38600 100%);
-            color: black;
-            border: 2px solid white;
-            padding: 10px 20px;
-            font-family: 'Arial Black', sans-serif;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 5px;
-            box-shadow: 0 4px 0 #665000;
-            transition: transform 0.1s;
+            background: var(--feud-gold); color: black; font-weight: bold;
+            border: none; padding: 10px 15px; border-radius: 4px;
+            cursor: pointer; transition: background 0.2s; font-size: 1rem;
+            margin-top: 10px; margin-right: 5px;
         }
+        button:hover { background: #d4a10d; }
+        button.danger { background: #e53e3e; color: white; }
+        button.danger:hover { background: #c53030; }
+        button.secondary { background: #4a5568; color: white; }
+        button.secondary:hover { background: #3182ce; }
 
-        button:active {
-            transform: translateY(4px);
-            box-shadow: none;
+        /* Question Bank UI */
+        .q-list-item {
+            background: #1a202c; padding: 10px; border-radius: 4px;
+            margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
+            border-left: 3px solid #4a5568;
         }
+        .q-list-item.active-q { border-left-color: #38a169; background: #223e2e; }
 
-        /* Scoreboard */
-        .scoreboard {
-            display: flex;
-            justify-content: space-around;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
+        /* Score grid */
+        .score-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;}
+        .score-box { 
+            background: #1a202c; padding: 10px; border-radius: 4px; text-align: center; flex: 1; min-width: 120px;
+            border: 2px solid transparent;
         }
+        .score-box.active-team { border-color: var(--feud-gold); }
+        .score-box h4 { margin: 0 0 5px 0; text-transform: uppercase; font-size: 0.85rem;}
+        .score-box .score-num { font-size: 1.8rem; font-weight: bold; color: var(--feud-gold); }
 
-        .team-score-card {
-            background: linear-gradient(135deg, #0044cc 0%, #001155 100%);
-            border: 4px solid #fff;
-            border-radius: 10px;
-            padding: 10px 20px;
-            text-align: center;
-            min-width: 150px;
-            box-shadow: 0 0 15px rgba(0, 102, 204, 0.5);
+        .ans-row { display: grid; grid-template-columns: 3fr 1fr 1fr; gap: 5px; margin-bottom: 5px; }
+        .launcher-zone {
+            background: #2b6cb0; text-align: center; padding: 15px; border-radius: 8px; margin-bottom: 20px;
         }
-
-        .team-score-card.active-team {
-            border-color: var(--feud-gold);
-            box-shadow: 0 0 25px var(--feud-gold);
-        }
-
-        .team-name {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .team-score {
-            font-size: 2.5rem;
-            color: var(--feud-gold);
-        }
-
-        .score-actions button {
-            padding: 2px 8px;
-            font-size: 0.8rem;
-            margin-top: 5px;
-        }
-
-        /* The Main Feud Board */
-        .feud-board {
-            background: var(--feud-board-bg);
-            border: 10px double var(--feud-gold);
-            border-radius: 25px;
-            padding: 25px;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.9), 0 0 30px rgba(241,184,17,0.3);
-        }
-
-        .question-display {
-            background: linear-gradient(180deg, #002266 0%, #001133 100%);
-            border: 3px solid var(--feud-gold);
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            font-size: 1.8rem;
-            margin-bottom: 25px;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-        }
-
-        .board-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        @media (max-width: 768px) {
-            .board-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Flip Card Logic */
-        .card-container {
-            perspective: 1000px;
-            height: 60px;
-        }
-
-        .card {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-        }
-
-        .card.flipped {
-            transform: rotateX(180deg);
-        }
-
-        .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            box-sizing: border-box;
-            border: 3px solid #fff;
-        }
-
-        .card-front {
-            background: linear-gradient(135deg, #0055ff 0%, #0022aa 100%);
-            justify-content: center;
-            color: #fff;
-        }
-
-        .card-number {
-            background: var(--feud-gold);
-            color: black;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        }
-
-        .card-back {
-            background: linear-gradient(135deg, #33aa33 0%, #115511 100%);
-            transform: rotateX(180deg);
-            justify-content: space-between;
-            padding: 0 20px;
-            border-color: var(--feud-gold);
-        }
-
-        .answer-text {
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 75%;
-        }
-
-        .answer-points {
-            background: #fff;
-            color: black;
-            padding: 5px 10px;
-            font-size: 1.3rem;
-            border-radius: 3px;
-            min-width: 35px;
-            text-align: center;
-        }
-
-        /* Strike / X Section */
-        .strike-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 25px;
-        }
-
-        .strike-btn {
-            background: #cc0000;
-            color: white;
-            font-size: 1.5rem;
-            border: 2px solid white;
-            border-radius: 5px;
-            cursor: pointer;
-            padding: 5px 15px;
-        }
-
-        .strike-display {
-            font-size: 3rem;
-            color: #ff3333;
-            text-shadow: 0 0 10px rgba(255,0,0,0.8);
-            letter-spacing: 10px;
-            height: 60px;
-        }
-
-        /* Navigation */
-        .game-nav {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
+        .launcher-zone button { background: white; color: #2b6cb0; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Math Feud</h1>
-        <p>Classroom Edition</p>
-    </header>
+    <div id="teacher-view">
+        <div class="launcher-zone">
+            <h2 style="color: white; margin: 0 0 10px 0;">🎥 Math Feud Setup</h2>
+            <p style="margin: 0 0 10px 0; color: #ebf8ff;">Connect your computer to the projector, then click the button below to launch the student view screen.</p>
+            <button onclick="openProjectorWindow()">1. Open Projector Window</button>
+        </div>
 
-    <div class="game-container">
-
-        <!-- STEP 1: SETUP PANEL -->
-        <div id="setup-panel" class="panel">
-            <h2>Game Setup</h2>
-            <div class="setup-group">
-                <label for="player-count">Number of Teams/Players:</label>
-                <select id="player-count" onchange="generateTeamInputs()">
-                    <option value="2" selected>2 Teams</option>
+        <div class="container">
+            <div class="panel">
+                <h2>1. Team Setup</h2>
+                <label>Number of Teams:</label>
+                <select id="team-count" onchange="initTeams()">
+                    <option value="2">2 Teams</option>
                     <option value="3">3 Teams</option>
                     <option value="4">4 Teams</option>
                 </select>
-            </div>
-            <div id="team-names-container">
-                <!-- Dynamically generated inputs for team names -->
-            </div>
-            <button onclick="saveSetup()">Initialize Teams</button>
-        </div>
+                <div id="team-name-inputs" style="margin-top: 10px;"></div>
+                <button onclick="saveTeamNames()" class="secondary">Sync Team Names</button>
 
-        <!-- STEP 2: TEACHER CONTROLS (Always visible to teacher once game starts) -->
-        <div id="teacher-panel" class="panel hidden">
-            <h2>Teacher Dashboard (Question Editor)</h2>
-            <div class="setup-group">
-                <label for="question-input">Current Question/Prompt:</label>
-                <input type="text" id="question-input" style="flex-grow: 1;" value="Name a topic studied in Algebra">
+                <hr style="border-color: #4a5568; margin: 20px 0;">
+                
+                <h2>2. Live Scoring Deck</h2>
+                <div class="score-grid" id="control-score-grid"></div>
+                <label>Strikes Counter:</label>
+                <div>
+                    <button onclick="adjustStrikes(1)" class="danger" style="font-size:1.2rem;">⚠️ Add Strike (X)</button>
+                    <button onclick="adjustStrikes(0)" class="secondary">Reset X</button>
+                </div>
             </div>
+
+            <div class="panel">
+                <h2>3. Question Bank</h2>
+                <p style="font-size: 0.9rem; color: #a0aec0;">Pre-populate your game database. Click "Push to Board" to activate a question instantly.</p>
+                
+                <div id="question-bank-list" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px;">
+                    </div>
+
+                <h3 style="border-top: 1px solid #4a5568; padding-top: 15px;">Add / Edit Bank Question</h3>
+                <label>Question text:</label>
+                <input type="text" id="edit-q-text" placeholder="e.g., Name a famous mathematician">
+                
+                <label>Answers & Point Targets:</label>
+                <div id="edit-answers-list">
+                    </div>
+                <button onclick="addQuestionToBank()">Save to Question Bank</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="projector-view" class="hidden" style="display:none;">
+        <style>
+            .projector-body {
+                background: radial-gradient(circle, #102a45 0%, #051026 100%);
+                color: white; margin: 0; padding: 30px; height: 100vh; box-sizing: border-box;
+                font-family: 'Arial Black', Impact, sans-serif; display: flex; flex-direction: column; justify-content: space-between;
+            }
+            .proj-header { text-align: center; font-size: 4rem; color: #f1b811; text-transform: uppercase; -webkit-text-stroke: 2px #fff; margin: 0;}
+            .proj-scores { display: flex; justify-content: center; gap: 30px; margin: 20px 0; }
+            .proj-team-card { background: linear-gradient(180deg, #0044cc 0%, #001155 100%); border: 5px solid #fff; border-radius: 12px; padding: 15px 30px; text-align: center; min-width: 200px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+            .proj-team-card.active { border-color: #f1b811; box-shadow: 0 0 30px #f1b811; }
+            .proj-team-name { font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px;}
+            .proj-team-score { font-size: 4rem; color: #f1b811; margin-top: 10px;}
+            .proj-board { background: #030a21; border: 10px double #f1b811; border-radius: 30px; padding: 30px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; box-shadow: inset 0 0 40px #000; }
+            .proj-q-display { background: linear-gradient(180deg, #002266 0%, #001133 100%); border: 3px solid #f1b811; border-radius: 15px; padding: 20px; text-align: center; font-size: 2.3rem; min-height: 60px; display: flex; align-items: center; justify-content: center; text-shadow: 2px 2px 4px #000; color: #fff;}
+            .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+            .proj-card-container { perspective: 1000px; height: 75px; }
+            .proj-card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+            .proj-card.flipped { transform: rotateX(180deg); }
+            .proj-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; box-sizing: border-box; border: 4px solid #fff; padding: 0 20px;}
+            .proj-front { background: linear-gradient(135deg, #0055ff 0%, #0022aa 100%); justify-content: center; }
+            .proj-circle-num { background: #f1b811; color: black; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 3px 5px rgba(0,0,0,0.5); }
+            .proj-back { background: linear-gradient(135deg, #228b22 0%, #0f4d0f 100%); transform: rotateX(180deg); justify-content: space-between; border-color: #f1b811; }
+            .proj-ans-text { font-size: 1.8rem; text-transform: uppercase; text-shadow: 2px 2px #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80%;}
+            .proj-ans-pts { background: #fff; color: black; padding: 5px 15px; font-size: 2rem; border-radius: 5px; min-width: 50px; text-align: center; font-weight: bold;}
+            .proj-strike-zone { font-size: 5rem; color: #ff2222; text-shadow: 0 0 20px #ff0000; text-align: center; height: 90px; letter-spacing: 15px;}
+        </style>
+        
+        <div class="projector-body">
+            <h1 class="proj-header">Math Feud</h1>
+            <div class="proj-scores" id="proj-scores-target"></div>
             
-            <h3>Answers & Point Values (Up to 8)</h3>
-            <div id="answers-setup-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom:15px;">
-                <!-- 8 Answer slots generated by JS -->
-            </div>
-
-            <button onclick="loadCustomDataToBoard()">Update Game Board with This Question</button>
-        </div>
-
-        <!-- STEP 3: MAIN GAME PORTAL -->
-        <div id="game-portal" class="hidden">
-            
-            <!-- Dynamic Realtime Scoreboard -->
-            <div class="scoreboard" id="scoreboard-display">
-                <!-- Generated by JS -->
-            </div>
-
-            <!-- The Family Feud Board -->
-            <div class="feud-board">
-                <div class="question-display" id="board-question">
-                    Question text goes here!
-                </div>
-
-                <div class="board-grid" id="board-grid">
-                    <!-- 8 Flippable Cards generated by JS -->
-                </div>
-
-                <!-- Strikes Controls -->
-                <div class="strike-container">
-                    <button class="strike-btn" onclick="addStrike()">Trigger Strike (X)</button>
-                    <div class="strike-display" id="strike-output"></div>
-                    <button class="strike-btn" style="background:#555;" onclick="resetStrikes()">Reset X</button>
-                </div>
-            </div>
-
-            <!-- Bottom Navigation -->
-            <div class="game-nav">
-                <button onclick="backToSetup()" style="background: #555;">&larr; Back to Setup</button>
-                <button onclick="clearBoardAnswers()" style="background: linear-gradient(180deg, #ffcc00 0%, #997700 100%);">Reset Current Board</button>
+            <div class="proj-board">
+                <div class="proj-q-display" id="proj-q-target">Awaiting Question...</div>
+                <div class="proj-grid" id="proj-grid-target"></div>
+                <div class="proj-strike-zone" id="proj-strike-target"></div>
             </div>
         </div>
-
     </div>
 
     <script>
-        // State variables
-        let gameData = {
-            question: "Name a tool used in Geometry geometry class.",
-            answers: [
-                { text: "Ruler", points: 45 },
-                { text: "Protractor", points: 30 },
-                { text: "Compass", points: 15 },
-                { text: "Pencil", points: 7 },
-                { text: "Eraser", points: 3 },
-                { text: "", points: 0 },
-                { text: "", points: 0 },
-                { text: "", points: 0 }
+        // Default Sample Math Bank Data
+        let questionBank = [
+            {
+                question: "Name a tool used in Geometry class",
+                answers: [
+                    {text: "Ruler / Straightedge", pts: 45, open: false},
+                    {text: "Protractor", pts: 32, open: false},
+                    {text: "Compass", pts: 18, open: false},
+                    {text: "Pencil", pts: 5, open: false}
+                ]
+            },
+            {
+                question: "Name a topic studied in Algebra",
+                answers: [
+                    {text: "Equations / Solving for X", pts: 50, open: false},
+                    {text: "Graphing / Slopes", pts: 25, open: false},
+                    {text: "Polynomials", pts: 12, open: false},
+                    {text: "Functions", pts: 8, open: false},
+                    {text: "Matrices", pts: 3, open: false}
+                ]
+            }
+        ];
+
+        let gameState = {
+            currentQuestion: "Setup complete. Select a question to broadcast!",
+            answers: [],
+            strikes: 0,
+            activeTeam: 0,
+            teams: [
+                {name: "Team 1", score: 0},
+                {name: "Team 2", score: 0}
             ]
         };
 
-        let teams = [];
-        let currentStrikes = 0;
+        // Determine mode based on URL query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const isProjectorView = urlParams.get('view') === 'projector';
 
-        // Init layout on load
         window.onload = function() {
-            generateTeamInputs();
-            generateTeacherAnswersForm();
+            if (isProjectorView) {
+                // morph page to clean projector screen format
+                document.getElementById('teacher-view').remove();
+                document.getElementById('projector-view').style.display = 'block';
+                listenToController();
+            } else {
+                // load Teacher controller panel interfaces
+                initTeams();
+                renderAnswerInputs();
+                renderQuestionBank();
+                syncToLocalStorage();
+                
+                // Keep controller panel updated if variables modify externally
+                window.addEventListener('storage', () => {
+                    const data = localStorage.getItem('mathFeudState');
+                    if (data) {
+                        gameState = JSON.parse(data);
+                        updateControllerUI();
+                    }
+                });
+            }
         };
 
-        function generateTeamInputs() {
-            const count = parseInt(document.getElementById('player-count').value);
-            const container = document.getElementById('team-names-container');
-            container.innerHTML = '';
-            
-            for(let i = 1; i <= count; i++) {
-                container.innerHTML += `
-                    <div class="setup-group">
-                        <label>Team ${i} Name:</label>
-                        <input type="text" id="team-name-${i}" value="Team ${i}">
-                    </div>
-                `;
-            }
+        /* ================= TEACHER DASHBOARD CODE ================= */
+        function openProjectorWindow() {
+            // Opens this exact index.html page but appends '?view=projector' to strip the admin elements
+            window.open(window.location.href + "?view=projector", "MathFeudProjector", "width=1024,height=768");
         }
 
-        function generateTeacherAnswersForm() {
-            const container = document.getElementById('answers-setup-grid');
+        function initTeams() {
+            const count = parseInt(document.getElementById('team-count').value);
+            const container = document.getElementById('team-name-inputs');
             container.innerHTML = '';
-            for(let i = 0; i < 8; i++) {
-                const defaultAns = gameData.answers[i] ? gameData.answers[i].text : "";
-                const defaultPts = gameData.answers[i] ? gameData.answers[i].points : 0;
+            
+            // Adjust internal state arrays safely
+            const oldTeams = [...gameState.teams];
+            gameState.teams = [];
+            
+            for(let i = 0; i < count; i++) {
+                const oldName = oldTeams[i] ? oldTeams[i].name : `Team ${i+1}`;
+                const oldScore = oldTeams[i] ? oldTeams[i].score : 0;
                 
+                gameState.teams.push({ name: oldName, score: oldScore });
                 container.innerHTML += `
-                    <div style="display:flex; gap:5px; align-items:center;">
-                        <span>${i+1}.</span>
-                        <input type="text" id="ans-text-${i}" placeholder="Answer" value="${defaultAns}" style="flex-grow:1;">
-                        <input type="number" id="ans-pts-${i}" placeholder="Pts" value="${defaultPts}" style="width:60px;">
+                    <div style="margin-bottom:5px;">
+                        <input type="text" id="t-input-${i}" value="${oldName}" style="width:70%; display:inline-block;">
+                        <button onclick="manualScoreAdjust(${i}, 5)" class="secondary" style="padding:4px 8px; margin:0;">+5</button>
+                        <button onclick="manualScoreAdjust(${i}, -5)" class="danger" style="padding:4px 8px; margin:0;">-5</button>
+                    </div>
+                `;
+            }
+            syncToLocalStorage();
+            updateControllerUI();
+        }
+
+        function saveTeamNames() {
+            gameState.teams.forEach((team, i) => {
+                const val = document.getElementById(`t-input-${i}`).value;
+                if(val) team.name = val;
+            });
+            syncToLocalStorage();
+            updateControllerUI();
+        }
+
+        function renderAnswerInputs() {
+            const grid = document.getElementById('edit-answers-list');
+            grid.innerHTML = '';
+            for(let i=0; i<6; i++) {
+                grid.innerHTML += `
+                    <div class="ans-row">
+                        <input type="text" id="new-ans-text-${i}" placeholder="Answer option">
+                        <input type="number" id="new-ans-pts-${i}" placeholder="Pts">
                     </div>
                 `;
             }
         }
 
-        function saveSetup() {
-            const count = parseInt(document.getElementById('player-count').value);
-            teams = [];
-            
-            for(let i = 1; i <= count; i++) {
-                const name = document.getElementById(`team-name-${i}`).value || `Team ${i}`;
-                teams.push({ name: name, score: 0 });
-            }
-
-            document.getElementById('setup-panel').classList.add('hidden');
-            document.getElementById('teacher-panel').classList.remove('hidden');
-            document.getElementById('game-portal').classList.remove('hidden');
-
-            updateScoreboardUI();
-            loadCustomDataToBoard();
-        }
-
-        function updateScoreboardUI() {
-            const container = document.getElementById('scoreboard-display');
-            container.innerHTML = '';
-
-            teams.forEach((team, index) => {
-                container.innerHTML += `
-                    <div class="team-score-card" id="team-card-${index}">
-                        <div class="team-name">${team.name}</div>
-                        <div class="team-score" id="score-val-${index}">${team.score}</div>
-                        <div class="score-actions">
-                            <button onclick="adjustScore(${index}, 5)">+5</button>
-                            <button onclick="adjustScore(${index}, 10)">+10</button>
-                            <button onclick="adjustScore(${index}, -5)" style="background:#cc0000; color:white;">-5</button>
-                            <button onclick="setActiveTeam(${index})" style="background:#fff; color:black;">Select</button>
+        function renderQuestionBank() {
+            const list = document.getElementById('question-bank-list');
+            list.innerHTML = '';
+            questionBank.forEach((item, index) => {
+                list.innerHTML += `
+                    <div class="q-list-item">
+                        <div>
+                            <strong>Q: ${item.question}</strong><br>
+                            <small style="color:#a0aec0;">(${item.answers.length} answers)</small>
+                        </div>
+                        <div>
+                            <button onclick="pushBankToLive(${index})" class="secondary" style="background:#2b6cb0;color:white;margin:0;font-size:0.8rem;">Push to Board</button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        function adjustScore(teamIndex, amount) {
-            teams[teamIndex].score += amount;
-            if (teams[teamIndex].score < 0) teams[teamIndex].score = 0;
-            document.getElementById(`score-val-${teamIndex}`).innerText = teams[teamIndex].score;
-        }
-
-        function setActiveTeam(teamIndex) {
-            teams.forEach((_, idx) => {
-                document.getElementById(`team-card-${idx}`).classList.remove('active-team');
-            });
-            document.getElementById(`team-card-${teamIndex}`).classList.add('active-team');
-        }
-
-        function loadCustomDataToBoard() {
-            // Read values from teacher dashboard
-            gameData.question = document.getElementById('question-input').value;
-            gameData.answers = [];
-
-            for(let i = 0; i < 8; i++) {
-                const text = document.getElementById(`ans-text-${i}`).value.trim();
-                const points = parseInt(document.getElementById(`ans-pts-${i}`).value) || 0;
-                gameData.answers.push({ text: text, points: points });
+        function addQuestionToBank() {
+            const qText = document.getElementById('edit-q-text').value.trim();
+            if(!qText) return alert("Please type a question prompt.");
+            
+            let answers = [];
+            for(let i=0; i<6; i++) {
+                const txt = document.getElementById(`new-ans-text-${i}`).value.trim();
+                const pts = parseInt(document.getElementById(`new-ans-pts-${i}`).value) || 0;
+                if(txt) {
+                    answers.push({ text: txt, pts: pts, open: false });
+                }
             }
-
-            // Update main Board UI
-            document.getElementById('board-question').innerText = gameData.question;
-            buildBoardGrid();
-            resetStrikes();
+            
+            questionBank.push({ question: qText, answers: answers });
+            renderQuestionBank();
+            
+            // clear entry forms
+            document.getElementById('edit-q-text').value = '';
+            renderAnswerInputs();
         }
 
-        function buildBoardGrid() {
-            const grid = document.getElementById('board-grid');
-            grid.innerHTML = '';
+        function pushBankToLive(index) {
+            const bankItem = questionBank[index];
+            gameState.currentQuestion = bankItem.question;
+            // deep copy answers
+            gameState.answers = bankItem.answers.map(a => ({...a, open: false}));
+            gameState.strikes = 0;
+            
+            // Highlight item item
+            document.querySelectorAll('.q-list-item').forEach((el, idx) => {
+                if(idx === index) el.classList.add('active-q');
+                else el.classList.remove('active-q');
+            });
 
-            // Filter out empty options so we don't display blank panels unnecessarily, 
-            // but keep structure clean.
-            let validIndex = 1;
-            gameData.answers.forEach((ans, index) => {
-                if (ans.text !== "") {
-                    grid.innerHTML += `
-                        <div class="card-container">
-                            <div class="card" id="card-${index}" onclick="flipCard(${index})">
-                                <div class="card-face card-front">
-                                    <div class="card-number">${validIndex}</div>
-                                </div>
-                                <div class="card-face card-back">
-                                    <div class="answer-text">${ans.text}</div>
-                                    <div class="answer-points">${ans.points}</div>
-                                </div>
+            syncToLocalStorage();
+            updateControllerUI();
+        }
+
+        function updateControllerUI() {
+            const scoreGrid = document.getElementById('control-score-grid');
+            scoreGrid.innerHTML = '';
+            
+            gameState.teams.forEach((team, i) => {
+                const isActive = gameState.activeTeam === i ? 'active-team' : '';
+                scoreGrid.innerHTML += `
+                    <div class="score-box ${isActive}" onclick="setActiveTeam(${i})" style="cursor:pointer;">
+                        <h4>${team.name}</h4>
+                        <div class="score-num">${team.score}</div>
+                        <small style="color:#718096;">(Click to target points)</small>
+                    </div>
+                `;
+            });
+
+            // Sync answer controllers on dashboard
+            const bankForm = document.getElementById('edit-answers-list');
+            // Show status panel of currently running puzzle below the score deck
+            let liveControlDeck = document.getElementById('live-control-deck');
+            if(!liveControlDeck) {
+                liveControlDeck = document.createElement('div');
+                liveControlDeck.id = 'live-control-deck';
+                document.getElementById('control-score-grid').parentNode.appendChild(liveControlDeck);
+            }
+            
+            let html = `<h3 style="margin-top:20px;">Board Actions</h3><p><strong>Active Question:</strong> ${gameState.currentQuestion}</p>`;
+            gameState.answers.forEach((ans, i) => {
+                const btnLabel = ans.open ? "REVEALED" : "REVEAL NOW";
+                const btnColor = ans.open ? "#2f855a" : "#2b6cb0";
+                html += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#1a202c; padding:8px; margin-bottom:5px; border-radius:4px;">
+                        <span>${i+1}. ${ans.text} (${ans.pts} pts)</span>
+                        <button onclick="revealLiveAnswer(${i})" style="margin:0; padding:4px 8px; background:${btnColor}; color:white; font-size:0.8rem;">${btnLabel}</button>
+                    </div>
+                `;
+            });
+            liveControlDeck.innerHTML = html;
+        }
+
+        function setActiveTeam(index) {
+            gameState.activeTeam = index;
+            syncToLocalStorage();
+            updateControllerUI();
+        }
+
+        function manualScoreAdjust(teamIndex, amount) {
+            gameState.teams[teamIndex].score += amount;
+            if(gameState.teams[teamIndex].score < 0) gameState.teams[teamIndex].score = 0;
+            syncToLocalStorage();
+            updateControllerUI();
+        }
+
+        function revealLiveAnswer(index) {
+            if(!gameState.answers[index].open) {
+                gameState.answers[index].open = true;
+                // automatically reward points to the chosen active team target
+                const targetTeam = gameState.activeTeam;
+                gameState.teams[targetTeam].score += gameState.answers[index].pts;
+            } else {
+                // toggle hide alternative state if desired
+                gameState.answers[index].open = false;
+            }
+            syncToLocalStorage();
+            updateControllerUI();
+        }
+
+        function adjustStrikes(val) {
+            if(val === 0) gameState.strikes = 0;
+            else if(gameState.strikes < 3) gameState.strikes++;
+            syncToLocalStorage();
+        }
+
+        function syncToLocalStorage() {
+            localStorage.setItem('mathFeudState', JSON.stringify(gameState));
+        }
+
+
+        /* ================= STUDENT PROJECTOR VIEW CODE ================= */
+        function listenToController() {
+            // Read status on setup load
+            renderProjectorUI();
+            
+            // Watch local storage strings changes instantly pushed by teacher console window
+            window.addEventListener('storage', () => {
+                renderProjectorUI();
+            });
+        }
+
+        function renderProjectorUI() {
+            const data = localStorage.getItem('mathFeudState');
+            if (!data) return;
+            const state = JSON.parse(data);
+
+            // 1. Output question
+            document.getElementById('proj-q-target').innerText = state.currentQuestion;
+
+            // 2. Output teams and scores
+            const scoreContainer = document.getElementById('proj-scores-target');
+            scoreContainer.innerHTML = '';
+            state.teams.forEach((team, idx) => {
+                const activeClass = state.activeTeam === idx ? 'active' : '';
+                scoreContainer.innerHTML += `
+                    <div class="proj-team-card ${activeClass}">
+                        <div class="proj-team-name">${team.name}</div>
+                        <div class="proj-team-score">${team.score}</div>
+                    </div>
+                `;
+            });
+
+            // 3. Render strike panel configuration
+            let strikeStr = '';
+            for(let s=0; s<state.strikes; s++) {
+                strikeStr += 'X ';
+            }
+            document.getElementById('proj-strike-target').innerText = strikeStr;
+
+            // 4. Render main puzzle matrix cards
+            const gridContainer = document.getElementById('proj-grid-target');
+            gridContainer.innerHTML = '';
+            state.answers.forEach((ans, idx) => {
+                const isFlipped = ans.open ? 'flipped' : '';
+                gridContainer.innerHTML += `
+                    <div class="proj-card-container">
+                        <div class="proj-card ${isFlipped}">
+                            <div class="proj-face proj-front">
+                                <div class="proj-circle-num">${idx + 1}</div>
+                            </div>
+                            <div class="proj-face proj-back">
+                                <div class="proj-ans-text">${ans.text}</div>
+                                <div class="proj-ans-pts">${ans.pts}</div>
                             </div>
                         </div>
-                    `;
-                    validIndex++;
-                }
+                    </div>
+                `;
             });
-        }
-
-        function flipCard(index) {
-            const card = document.getElementById(`card-${index}`);
-            if (!card.classList.contains('flipped')) {
-                card.classList.add('flipped');
-                
-                // Route points automatically to active selected team if any
-                const activeCard = document.querySelector('.active-team');
-                if (activeCard) {
-                    const activeIdx = activeCard.id.split('-')[2];
-                    adjustScore(parseInt(activeIdx), gameData.answers[index].points);
-                }
-            } else {
-                card.classList.remove('flipped');
-            }
-        }
-
-        function clearBoardAnswers() {
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => card.classList.remove('flipped'));
-            resetStrikes();
-        }
-
-        function addStrike() {
-            if (currentStrikes < 3) {
-                currentStrikes++;
-                let strikesX = '';
-                for(let i=0; i<currentStrikes; i++) {
-                    strikesX += 'X ';
-                }
-                document.getElementById('strike-output').innerText = strikesX;
-            }
-        }
-
-        function resetStrikes() {
-            currentStrikes = 0;
-            document.getElementById('strike-output').innerText = '';
-        }
-
-        function backToSetup() {
-            document.getElementById('setup-panel').classList.remove('hidden');
-            document.getElementById('teacher-panel').classList.add('hidden');
-            document.getElementById('game-portal').classList.add('hidden');
         }
     </script>
 </body>
