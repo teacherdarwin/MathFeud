@@ -469,43 +469,40 @@
             <span class="battle-text">Battle</span>
         </div>
         <button class="btn-intro" onclick="switchScreen('setup-screen')">LET'S PLAY!</button>
-        <div class="intro-credits">
-            Follow me on Facebook: Kim Oyda | Tiktok: josephkim456[cite: 1]
-        </div>
     </div>
 
     <!-- Setup Screen -->
     <div id="setup-screen" class="screen">
         <div class="setup-card">
-            <h1>⚙️ Game Setup[cite: 1]</h1>
+            <h1>⚙️ Game Setup</h1>
 
             <div class="team-name-inputs">
                 <div class="form-group">
-                    <label for="team1Input" style="color: var(--team1-color);">Player 1 Name:[cite: 1]</label>
+                    <label for="team1Input" style="color: var(--team1-color);">Player 1 Name:</label>
                     <input type="text" id="team1Input" value="Team 1" style="border-color: #ff7675;">
                 </div>
                 <div class="form-group">
-                    <label for="team2Input" style="color: var(--team2-color);">Player 2 Name:[cite: 1]</label>
+                    <label for="team2Input" style="color: var(--team2-color);">Player 2 Name:</label>
                     <input type="text" id="team2Input" value="Team 2" style="border-color: #74b9ff;">
                 </div>
             </div>
             
             <div class="form-group">
-                <label for="timerInput">Timer (Seconds):[cite: 1]</label>
+                <label for="timerInput">Timer (Seconds):</label>
                 <input type="number" id="timerInput" value="60" min="10" max="300">
             </div>
 
             <div class="form-group">
-                <label for="categoryInput">Category:[cite: 1]</label>
+                <label for="categoryInput">Category:</label>
                 <select id="categoryInput" onchange="updateRuleOptions()">
-                    <option value="numbers">Numbers (1 - 100)[cite: 1]</option>
-                    <option value="words">Vocabulary Words[cite: 1]</option>
-                    <option value="custom">Custom Words (Teacher Panel)[cite: 1]</option>
+                    <option value="numbers">Numbers (1 - 100)</option>
+                    <option value="words">Vocabulary Words</option>
+                    <option value="custom">Custom Words (Teacher Panel)</option>
                 </select>
             </div>
 
             <div id="rule-select-group" class="form-group">
-                <label for="ruleInput">Target Rule:[cite: 1]</label>
+                <label for="ruleInput">Target Rule:</label>
                 <select id="ruleInput">
                     <!-- Options populated by JS -->
                 </select>
@@ -514,15 +511,15 @@
             <!-- Teacher Panel: Custom Mode Setup -->
             <div id="custom-setup-group" style="display: none; background: #f8fafc; padding: 1.5rem; border-radius: 20px; margin-bottom: 1.5rem; border: 4px dashed #6c5ce7;">
                 <div class="form-group">
-                    <label style="font-size: 1.1rem; color: #6c5ce7;">Command / Instruction:[cite: 1]</label>
+                    <label style="font-size: 1.1rem; color: #6c5ce7;">Command / Instruction:</label>
                     <input type="text" id="customCommand" placeholder="e.g., Find the Mammals!" value="Find the correct words!" style="padding: 0.75rem; font-size: 1.1rem;">
                 </div>
                 <div class="form-group">
-                    <label style="font-size: 1.1rem; color: var(--correct-color);">Correct Words (comma separated):[cite: 1]</label>
+                    <label style="font-size: 1.1rem; color: var(--correct-color);">Correct Words (comma separated):</label>
                     <textarea id="customCorrect" class="custom-input" placeholder="Dog, Cat, Whale..."></textarea>
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label style="font-size: 1.1rem; color: var(--wrong-color);">Distractor Words (comma separated):[cite: 1]</label>
+                    <label style="font-size: 1.1rem; color: var(--wrong-color);">Distractor Words (comma separated):</label>
                     <textarea id="customWrong" class="custom-input" placeholder="Lizard, Frog, Eagle..."></textarea>
                 </div>
             </div>
@@ -535,37 +532,32 @@
     <div id="game-screen" class="screen">
         <div id="hud">
             <div class="score-board t1-score">
-                <span id="team1-display">Team 1:[cite: 1]</span>
-                <span id="score1">0[cite: 1]</span>
+                <span id="team1-display">Team 1:</span>
+                <span id="score1">0</span>
             </div>
             <div class="center-hud">
-                <div id="current-rule">Find: Even Numbers[cite: 1]</div>
-                <button class="btn-end" onclick="endGame()">End Game Early[cite: 1]</button>
+                <div id="current-rule">Find: Even Numbers</div>
+                <button class="btn-end" onclick="endGame()">End Game Early</button>
             </div>
             <div class="score-board t2-score">
-                <span id="score2">0[cite: 1]</span>
-                <span id="team2-display">:Team 2[cite: 1]</span>
+                <span id="score2">0</span>
+                <span id="team2-display">:Team 2</span>
             </div>
         </div>
         <div class="arena">
-            <div id="timer">60[cite: 1]</div>
+            <div id="timer">60</div>
             <div id="zone-1" class="team-zone"></div>
             <div id="zone-2" class="team-zone"></div>
-        </div>
-        
-        <!-- Creator Credits -->
-        <div class="creator-credits">
-            Follow me on Facebook: Kim Oyda | Tiktok: josephkim456[cite: 1]
         </div>
     </div>
 
     <!-- Game Over Screen -->
     <div id="gameover-screen" class="screen">
         <div class="winner-card">
-            <div id="winnerText">Team 1 Wins! 🎉[cite: 1]</div>
+            <div id="winnerText">Team 1 Wins! 🎉</div>
             <div class="final-scores">
-                <div style="color: var(--team1-color)"><span id="finalTeam1Name">Team 1[cite: 1]</span>: <span id="finalScore1">0[cite: 1]</span></div>
-                <div style="color: var(--team2-color)"><span id="finalTeam2Name">Team 2[cite: 1]</span>: <span id="finalScore2">0[cite: 1]</span></div>
+                <div style="color: var(--team1-color)"><span id="finalTeam1Name">Team 1</span>: <span id="finalScore1">0</span></div>
+                <div style="color: var(--team2-color)"><span id="finalTeam2Name">Team 2</span>: <span id="finalScore2">0</span></div>
             </div>
             <button class="btn-start" onclick="resetToSetup()">Play Again 🔄</button>
         </div>
