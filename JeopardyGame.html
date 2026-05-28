@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classroom Jeopardy</title>
+    <title>Classroom Jeopardy Game</title>
     <!-- Importing Bebas Neue from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,6 +28,7 @@
             flex-direction: column; 
             min-height: 100vh;
             font-family: var(--font-sans);
+            padding-bottom: 80px; /* Space for configuration button */
         }
         
         h1 { 
@@ -94,9 +95,6 @@
             filter: brightness(1.15);
             box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.3);
         }
-        .score-btn:active {
-            transform: translateY(0);
-        }
 
         /* Game Board Grid */
         .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; flex-grow: 1; max-width: 1200px; margin: 0 auto; width: 100%; }
@@ -148,7 +146,7 @@
             transform: none;
         }
 
-        /* Modal Overlay */
+        /* Generic Modals Framework */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); align-items: center; justify-content: center; padding: 20px; z-index: 100; }
         .modal-content { 
             background: #1e293b; 
@@ -162,12 +160,14 @@
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); 
         }
         .modal-text { font-size: 2.2rem; line-height: 1.4; margin-bottom: 40px; font-weight: 600; color: var(--text-light); }
-        .reveal-btn { 
+        
+        /* Action Buttons */
+        .action-btn { 
             background: var(--accent-amber); 
             color: #0f172a; 
             border: none; 
             padding: 16px 36px; 
-            font-size: 1.3rem; 
+            font-size: 1.1rem; 
             font-weight: 800; 
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -176,31 +176,116 @@
             transition: all 0.2s ease;
             box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
         }
-        .reveal-btn:hover { 
+        .action-btn:hover { 
             background: #fbbf24; 
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
         }
-        .reveal-btn:active {
-            transform: translateY(0);
-        }
-        .close-btn { 
-            position: absolute; 
-            top: 20px; 
-            right: 25px; 
-            font-size: 2.5rem; 
-            cursor: pointer; 
-            color: #94a3b8; 
-            transition: color 0.2s;
-            line-height: 1;
-        }
+        .close-btn { position: absolute; top: 20px; right: 25px; font-size: 2.5rem; cursor: pointer; color: #94a3b8; transition: color 0.2s; line-height: 1; }
         .close-btn:hover { color: white; }
+
+        /* Floating Settings Launcher */
+        .config-launcher {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #334155;
+            color: var(--text-light);
+            border: 2px solid #475569;
+            padding: 12px 24px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 90;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .config-launcher:hover {
+            background: #475569;
+            border-color: var(--accent-amber);
+            color: var(--accent-amber);
+            transform: scale(1.05);
+        }
+
+        /* Teacher Dashboard Panel Layout */
+        #configModal .modal-content {
+            max-width: 1000px;
+            max-height: 85vh;
+            overflow-y: auto;
+            text-align: left;
+            padding: 30px;
+        }
+        #configModal h2 {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            color: var(--accent-amber);
+            margin-bottom: 20px;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 10px;
+        }
+        .panel-columns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .panel-column {
+            background: #111827;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+        .column-title-input {
+            width: 100%;
+            background: #1f2937;
+            border: 2px solid var(--accent-amber);
+            color: white;
+            font-weight: 800;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        .clue-edit-block {
+            background: #1e293b;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 3px solid #3b82f6;
+        }
+        .clue-val-label {
+            font-family: var(--font-display);
+            color: #3b82f6;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        .panel-input {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            display: block;
+        }
+        .panel-input:focus {
+            outline: none;
+            border-color: var(--accent-amber);
+        }
+        .panel-input::placeholder { color: #64748b; }
+        .save-footer { text-align: center; }
     </style>
 </head>
 <body>
 
     <h1>Classroom Jeopardy</h1>
 
+    <!-- Scoreboard Dashboard -->
     <div class="scoreboard">
         <div class="team-card">
             <div class="team-name" contenteditable="true">Team 1</div>
@@ -236,19 +321,42 @@
         </div>
     </div>
 
+    <!-- Active Grid Board -->
     <div class="board" id="gameBoard"></div>
 
+    <!-- Live Clue Viewer Modal -->
     <div class="modal" id="clueModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <div class="modal-text" id="modalText">Clue text goes here...</div>
-            <button class="reveal-btn" id="revealBtn" onclick="revealAnswer()">Show Answer</button>
+            <button class="action-btn" id="revealBtn" onclick="revealAnswer()">Show Answer</button>
+        </div>
+    </div>
+
+    <!-- Floating Trigger Config Button -->
+    <button class="config-launcher" onclick="openConfigPanel()">
+        ⚙️ Teacher Dashboard
+    </button>
+
+    <!-- Content Configuration Editor Modal -->
+    <div class="modal" id="configModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeConfigPanel()">&times;</span>
+            <h2>Game Content Configuration</h2>
+            
+            <div id="panelFormGroup" class="panel-columns">
+                <!-- Javascript maps editing columns here dynamically -->
+            </div>
+
+            <div class="save-footer">
+                <button class="action-btn" onclick="saveConfigData()">Apply changes & Reset Board</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // CONFIGURATION: Edit your categories, questions, and answers here easily!
-        const gameData = [
+        // Storage configuration for initial state data template
+        let gameData = [
             {
                 category: "Algebra",
                 clues: [
@@ -289,10 +397,12 @@
 
         let currentAnswer = "";
 
+        // Build main interactive grid board view
         function initBoard() {
             const board = document.getElementById('gameBoard');
+            board.innerHTML = ""; // Complete wipe for safe re-render calls
             
-            // Generate headers
+            // Build visual text category labels header row
             gameData.forEach(cat => {
                 const header = document.createElement('div');
                 header.className = 'category-header';
@@ -300,7 +410,7 @@
                 board.appendChild(header);
             });
 
-            // Generate row items sequentially by value
+            // Parse structural column rows sorted strictly by numerical target values
             const numRows = gameData[0].clues.length;
             for (let r = 0; r < numRows; r++) {
                 for (let c = 0; c < gameData.length; c++) {
@@ -338,6 +448,63 @@
         function changeScore(id, amt) {
             const scoreEl = document.getElementById(id);
             scoreEl.innerText = parseInt(scoreEl.innerText) + amt;
+        }
+
+        // Generate form fields inside the Configuration Manager panel dynamically
+        function openConfigPanel() {
+            const container = document.getElementById('panelFormGroup');
+            container.innerHTML = ""; // Clear old nodes out safely
+            
+            gameData.forEach((catObj, catIdx) => {
+                const colNode = document.createElement('div');
+                colNode.className = 'panel-column';
+                
+                // Head Category Input Text Box
+                colNode.innerHTML = `
+                    <input type="text" class="column-title-input" id="cfg-cat-${catIdx}" value="${catObj.category}">
+                `;
+                
+                // Run mapping down values arrays inside current Category
+                catObj.clues.forEach((clueObj, clueIdx) => {
+                    const editBlock = document.createElement('div');
+                    editBlock.className = 'clue-edit-block';
+                    editBlock.innerHTML = `
+                        <div class="clue-val-label">$${clueObj.value}</div>
+                        <input type="text" class="panel-input" id="cfg-q-${catIdx}-${clueIdx}" placeholder="Question text" value="${clueObj.q.replace(/"/g, '&quot;')}">
+                        <input type="text" class="panel-input" id="cfg-a-${catIdx}-${clueIdx}" placeholder="Answer description" value="${clueObj.a.replace(/"/g, '&quot;')}">
+                    `;
+                    colNode.appendChild(editBlock);
+                });
+                
+                container.appendChild(colNode);
+            });
+            
+            document.getElementById('configModal').style.display = 'flex';
+        }
+
+        function closeConfigPanel() {
+            document.getElementById('configModal').style.display = 'none';
+        }
+
+        // Grab form strings array, reconstruct gameData array structure, updates layout grid
+        function saveConfigData() {
+            gameData.forEach((catObj, catIdx) => {
+                const newCatName = document.getElementById(`cfg-cat-${catIdx}`).value;
+                if(newCatName.trim() !== "") {
+                    catObj.category = newCatName;
+                }
+                
+                catObj.clues.forEach((clueObj, clueIdx) => {
+                    const questionVal = document.getElementById(`cfg-q-${catIdx}-${clueIdx}`).value;
+                    const answerVal = document.getElementById(`cfg-a-${catIdx}-${clueIdx}`).value;
+                    
+                    clueObj.q = questionVal;
+                    clueObj.a = answerVal;
+                });
+            });
+            
+            initBoard(); // Force rebuild matrix values graphics elements
+            closeConfigPanel();
         }
 
         window.onload = initBoard;
